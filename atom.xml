@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>retanoj&#39;s Blog</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://retanoj.github.io/"/>
+  <updated>2016-10-31T12:48:06.000Z</updated>
+  <id>http://retanoj.github.io/</id>
+  
+  <author>
+    <name>retanoj</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从Jekyll迁移到Hexo</title>
+    <link href="http://retanoj.github.io/2016/10/31/Misc-2016-10-31-%E4%BB%8EJekyll%E8%BF%81%E7%A7%BB%E5%88%B0Hexo/"/>
+    <id>http://retanoj.github.io/2016/10/31/Misc-2016-10-31-从Jekyll迁移到Hexo/</id>
+    <published>2016-10-30T16:00:00.000Z</published>
+    <updated>2016-10-31T12:48:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="从Jekyll迁移到Hexo"><a href="#从Jekyll迁移到Hexo" class="headerlink" title="从Jekyll迁移到Hexo"></a>从Jekyll迁移到Hexo</h1><p>Blog最初使用Jekyll搭建。由于本人较懒，且对设计无感，随便找了个模板就上了。然而随着品味逐渐提高，对设计也有了一定的认识。并且，Jekyll基于Ruby，Hexo基于Nodejs；Ruby不通，Nodejs稍有涉猎；Hexo结构简洁，Jekyll看着就烦。最终，还是想折腾折腾，就迁移了。</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>首先假设已安装node与npm，同时建议将npm源换到淘宝的镜像(<a href="https://npm.taobao.org/" target="_blank" rel="external">https://npm.taobao.org/</a>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ npm install -g hexo-cli # 全局安装hexo-cli</div><div class="line">$ npm install hexo --save # 本地安装hexo</div></pre></td></tr></table></figure>
+<p>此后会在本地目录下生成node_modules，误删！！</p>
+<p>建立一个hexo项目</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo init</div></pre></td></tr></table></figure>
+<p>接下来，安装Hexo插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ npm i(nstall) hexo-generator-index --save</div><div class="line">$ npm i hexo-generator-archive --save</div><div class="line">$ npm i hexo-generator-category --save</div><div class="line">$ npm i hexo-generator-tag --save</div><div class="line">$ npm i hexo-server --save</div><div class="line">$ npm i hexo-deployer-git --save</div><div class="line">$ npm i hexo-deployer-heroku --save</div><div class="line">$ npm i hexo-deployer-rsync --save</div><div class="line">$ npm i hexo-deployer-openshift --save</div><div class="line">$ npm i hexo-renderer-marked@0.2 --save</div><div class="line">$ npm i hexo-renderer-stylus@0.2 --save</div><div class="line">$ npm i hexo-generator-feed@1 --save</div><div class="line">$ npm i hexo-generator-sitemap@1 --save</div></pre></td></tr></table></figure>
+<p>安装结束:)</p>
+<h2 id="主题变更"><a href="#主题变更" class="headerlink" title="主题变更"></a>主题变更</h2><p>先把hexo server跑起来看看效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div><div class="line">INFO  Start processing</div><div class="line">INFO  Hexo is running at http://localhost:4000/. Press Ctrl+C to stop.</div></pre></td></tr></table></figure>
+<p>访问<a href="http://localhost:4000看看，Hexo果然看着比Jekyll顺眼。" target="_blank" rel="external">http://localhost:4000看看，Hexo果然看着比Jekyll顺眼。</a></p>
+<p>不过我们还是来换个主题——NexT。为什么换？我就是想换！</p>
+<p>下载最新版NexT主题到themes/next文件夹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/iissnan/hexo-theme-next themes/next</div></pre></td></tr></table></figure>
+<p>修改站点配置文件_config.yml，启用主题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">theme: next</div></pre></td></tr></table></figure>
+<p>完成:)</p>
+<p>跑起来看看，跟NexT官网是一样的！</p>
+<p>更多主题细节请参考NexT主题官网！！</p>
+<h2 id="更多配置"><a href="#更多配置" class="headerlink" title="更多配置"></a>更多配置</h2><ul>
+<li>添加Git部署，修改站点配置文件_config.yml</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">   type: git</div><div class="line">   repository: git@github.com:path_to_your_git_blog.git</div><div class="line">   branch: master</div></pre></td></tr></table></figure>
+<ul>
+<li>添加”分类”页面</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new page categories</div></pre></td></tr></table></figure>
+<p>编辑页面内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: 分类</div><div class="line">type: &quot;categories&quot;</div><div class="line">comments: false</div><div class="line">---</div></pre></td></tr></table></figure>
+<p>更多内容，如添加”标签”页面，修改scaffolds模板，fancybox使用等就不再赘述</p>
+<h2 id="文件迁移"><a href="#文件迁移" class="headerlink" title="文件迁移"></a>文件迁移</h2><p>说来简单，将原Jekyll的_posts文件夹下的内容复制到source/_posts下即可。</p>
+<p>同时，最好要保证帖子开头的字段与Hexo模板内字段一致</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.ezlippi.com/blog/2016/02/jekyll-to-hexo.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Jekyll迁移到Hexo搭建个人博客</a></p>
+<p><a href="http://theme-next.iissnan.com/" target="_blank" rel="external">NexT主题官网</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;从Jekyll迁移到Hexo&quot;&gt;&lt;a href=&quot;#从Jekyll迁移到Hexo&quot; class=&quot;headerlink&quot; title=&quot;从Jekyll迁移到Hexo&quot;&gt;&lt;/a&gt;从Jekyll迁移到Hexo&lt;/h1&gt;&lt;p&gt;Blog最初使用Jekyll搭建。由于本人较
+    
+    </summary>
+    
+      <category term="Misc" scheme="http://retanoj.github.io/categories/Misc/"/>
+    
+    
+      <category term="Misc" scheme="http://retanoj.github.io/tags/Misc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>解决MAC双屏时同时滑动</title>
+    <link href="http://retanoj.github.io/2016/07/26/Misc-2016-07-26-%E8%A7%A3%E5%86%B3MAC%E5%8F%8C%E5%B1%8F%E6%97%B6%E5%90%8C%E6%97%B6%E6%BB%91%E5%8A%A8/"/>
+    <id>http://retanoj.github.io/2016/07/26/Misc-2016-07-26-解决MAC双屏时同时滑动/</id>
+    <published>2016-07-25T16:00:00.000Z</published>
+    <updated>2016-10-31T07:02:14.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Just-do-it"><a href="#Just-do-it" class="headerlink" title="Just do it"></a>Just do it</h2><p>系统偏好设置 -&gt; Mission Control -&gt; 显示器具有单独的Spaces(勾选)</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Just-do-it&quot;&gt;&lt;a href=&quot;#Just-do-it&quot; class=&quot;headerlink&quot; title=&quot;Just do it&quot;&gt;&lt;/a&gt;Just do it&lt;/h2&gt;&lt;p&gt;系统偏好设置 -&amp;gt; Mission Control -&amp;gt; 显示器
+    
+    </summary>
+    
+      <category term="Misc" scheme="http://retanoj.github.io/categories/Misc/"/>
+    
+    
+      <category term="Misc" scheme="http://retanoj.github.io/tags/Misc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>对RESTful的理解</title>
+    <link href="http://retanoj.github.io/2016/07/21/Misc-2016-07-21-%E5%AF%B9RESTful%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    <id>http://retanoj.github.io/2016/07/21/Misc-2016-07-21-对RESTful的理解/</id>
+    <published>2016-07-20T16:00:00.000Z</published>
+    <updated>2016-10-31T07:05:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>REST(REpresentational State Transfer)，可以试译为”表现状态转变”。 REST是一种软件架构风格，也是一套约束条件。满足这套约束条件的设计叫做RESTful设计，在此之上的实现叫做RESTful的实现。</p>
+<p>表现状态转变(REST)缺少个主体，即“资源”。所以可以被叫做“资源表现状态转变”。</p>
+<h2 id="一、资源-Resources"><a href="#一、资源-Resources" class="headerlink" title="一、资源(Resources)"></a>一、资源(Resources)</h2><p>资源，即网络上的一个实体。它可能是一段文本，一张图片，也可能是一个服务。通常用URI（统一资源定位符）指向它。</p>
+<h2 id="二、表现-Representation"><a href="#二、表现-Representation" class="headerlink" title="二、表现(Representation)"></a>二、表现(Representation)</h2><p>表现，即资源这个信息实体的表现形式。例如文本可以以HTML的形式来展现给用户，还可以已JSON展现。</p>
+<p>因此，有些言论中说，URI中定位到资源时的后缀带有“.html”是不必要的，因为它在“资源”的层面表达了“表现”层面所要表达的内容。这样的说法也不无道理。而资源的具体表现形式，应该在HTTP协议中的Content-Type字段和Accept字段中被描述。</p>
+<h2 id="三、状态转变-State-Transfer"><a href="#三、状态转变-State-Transfer" class="headerlink" title="三、状态转变(State Transfer)"></a>三、状态转变(State Transfer)</h2><p>HTTP协议是一个无状态的协议。客户端和服务器交互的状态被通过各种方式保存在服务端。例如用户上传了自己的头像，更新了自己的昵称，这些都在服务端被记录和保存。由此看来，如果用户想让处在服务端的资源发生改变，就要通过某种手段让其状态发生转变。而这种转变是建立在“表现”层上，所以被叫做“表现状态转变”。</p>
+<p>在REST里规定了客户端操纵资源的几个动词，即HTTP协议中的Method。包括“GET”(获取)、“POST”(新建)、“PUT”(更新)、“DELETE”(删除)。</p>
+<h2 id="四、案例-Case-Study"><a href="#四、案例-Case-Study" class="headerlink" title="四、案例(Case Study)"></a>四、案例(Case Study)</h2><p>1) /posts/33  vs  /posts/show/33</p>
+<p>URI里包含动词是RESTful设计的一大误区。动词应该是HTTP的Method，不应该出现在URI中。URI是单纯的对互联网上资源的指向。因此GET /posts/33是正确的设计方法。</p>
+<p>2) /account/2/transfer/104/to/5  vs  /transaction</p>
+<p>RESTful的动词的确存在局限，例如在金钱交易的时候，四个动词均不能表达“转账”的概念。但换个角度来看，“转账”可以成为一项服务，而服务可以被看做互联网上的一种资源（服务是资源）。因此可以在URI中将“转账”设计成/transaction，通过动词POST来建立转账记录。</p>
+<pre><code>POST /transaction HTTP/2.0
+...
+
+account=2&amp;money=104.00&amp;to=5
+</code></pre><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://www.ruanyifeng.com/blog/2011/09/restful.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2011/09/restful.html</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;REST(REpresentational State Transfer)，可以试译为”表现状态转变”。 REST是一种软件架构风格，也是一套约束条件。满足这套约束条件的设计叫做RESTful设计，在此之上的实现叫做RESTful的实现。&lt;/p&gt;
+&lt;p&gt;表现状态转变(RES
+    
+    </summary>
+    
+      <category term="Misc" scheme="http://retanoj.github.io/categories/Misc/"/>
+    
+    
+      <category term="Misc" scheme="http://retanoj.github.io/tags/Misc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>leetcode 338.Counting Bits</title>
+    <link href="http://retanoj.github.io/2016/04/16/%E9%A2%98%E7%9B%AE-2016-04-16-leetcode-338-Counting-Bits/"/>
+    <id>http://retanoj.github.io/2016/04/16/题目-2016-04-16-leetcode-338-Counting-Bits/</id>
+    <published>2016-04-15T16:00:00.000Z</published>
+    <updated>2016-10-31T07:02:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="388-Counting-Bits"><a href="#388-Counting-Bits" class="headerlink" title="388.Counting Bits"></a>388.Counting Bits</h2><p>给出一个非零数字 num，对于每一个在 0 &lt;= i &lt;= num的i，输出 i 的二进制表示中数字1的个数。</p>
+<p>例如 num = 5，应该输出 [0,1,1,2,1,2]。</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>num = 5时</p>
+<p>i = 0 – 0000， 1的个数为 res[0] = 0 个</p>
+<p>i = 1 – 0001， 1的个数为 res[1] = 1 个</p>
+<p>i = 2 – 0010， 1的个数为 res[2] = 1 个</p>
+<p>i = 3 – 0011， 1的个数为 res[3] = 2 个</p>
+<p>i = 4 – 0100， 1的个数为 res[4] = 1 个</p>
+<p>i = 5 – 0101， 1的个数为 res[5] = 2 个</p>
+<p>重点在于如何利用先前计算得到的结果来帮助计算当前 i 所对应的值。</p>
+<p>当 i 是奇数（如5）时，末位’1’由 4 加一而来，因此res[5] = res[5 - 1] + 1，也可以用&amp;将末位置零，即res[5] = res[5 &amp; 4] + 1</p>
+<p>当 i 是偶数（如4）时，末位’0’由 3 加一进位而来，即b’011’ -&gt; b’100’。同样，可以用&amp;将变化的bit位置零后，结果加一即可。 res[4] = res[4 &amp; 3] + 1</p>
+<p>因此, res[i] = res[(i &amp; (i-1))] + 1</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;388-Counting-Bits&quot;&gt;&lt;a href=&quot;#388-Counting-Bits&quot; class=&quot;headerlink&quot; title=&quot;388.Counting Bits&quot;&gt;&lt;/a&gt;388.Counting Bits&lt;/h2&gt;&lt;p&gt;给出一个非零数字 n
+    
+    </summary>
+    
+      <category term="算法" scheme="http://retanoj.github.io/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="题目" scheme="http://retanoj.github.io/tags/%E9%A2%98%E7%9B%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>腾讯2016在线笔试某题</title>
+    <link href="http://retanoj.github.io/2016/03/03/%E9%A2%98%E7%9B%AE-2016-03-03-%E8%85%BE%E8%AE%AF2016%E5%9C%A8%E7%BA%BF%E7%AC%94%E8%AF%95%E6%9F%90%E9%A2%98/"/>
+    <id>http://retanoj.github.io/2016/03/03/题目-2016-03-03-腾讯2016在线笔试某题/</id>
+    <published>2016-03-02T16:00:00.000Z</published>
+    <updated>2016-10-31T07:02:25.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>甲乙两人按一定规则拿棋子，棋子有19颗，规则是每次每人只能拿1或3或6颗。问是否有先手必胜策略，策略是什么？</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><p>首先说明一点，按个人理解题意，当剩下2颗棋子时，选手只能拿走1颗。</p>
+<p>接下来说递推过程</p>
+<ul>
+<li><p>棋子有1颗，按如上规则，那么先手必胜，必胜策略是拿1颗；</p>
+</li>
+<li><p>棋子有2颗，按如上规则，那么先手必败，因为先手只能拿1颗，后手（对方）在剩余棋子情况下拿1颗，对方赢；</p>
+</li>
+<li><p>棋子有3颗，按如上规则，那么先手必胜，必胜策略是拿3颗；</p>
+</li>
+<li><p>棋子有4颗，……………………….先手必败，因为无论先手拿1颗还是3颗，后手（对方）都能一次拿完剩余的3颗或1颗（即，当先手拿完棋子后，在剩余棋子的情况下后手拥有“先拿”必胜策略）；</p>
+</li>
+<li><p>……</p>
+</li>
+</ul>
+<p>可归纳出结论如下：在棋子有N颗的情况下，若先手通过拿1颗或3颗或6颗的规则能够将后手引入剩余棋子的“先拿”必败策略，则先手必胜；若先手在三种规则下都会将后手引入剩余棋子的“先拿”必胜策略，则先手必败。</p>
+<p>因此可以列出下表</p>
+<p><img src="http://ww3.sinaimg.cn/large/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg" alt=""></p>
+<p>举例来看，当棋子有7颗时，先手拿1颗后手剩6颗，后手进入“先拿必胜棋子数6颗”的情况；先手拿3颗，后手进入“先拿必输棋子数4颗”的情况。因此在棋子数为7时，先手先拿3颗会必胜。</p>
+<p>因此，19颗时，19-1=18（可行），19-3=16（不行），19-6=13（可行）。先手有两种必胜策略，先拿1颗或先拿6颗。</p>
+<p>往后推也可以知道，这种算法的时间复杂度为O(n)</p>
+<p>题解结束</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h2&gt;&lt;p&gt;甲乙两人按一定规则拿棋子，棋子有19颗，规则是每次每人只能拿1或3或6颗。问是否有先手必胜策略，策略是什么？&lt;/p&gt;
+&lt;h2 id=&quot;题解&quot;
+    
+    </summary>
+    
+      <category term="算法" scheme="http://retanoj.github.io/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="题目" scheme="http://retanoj.github.io/tags/%E9%A2%98%E7%9B%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>网站返回时间问题</title>
+    <link href="http://retanoj.github.io/2014/08/14/Misc-2014-08-14-%E7%BD%91%E7%AB%99%E8%BF%94%E5%9B%9E%E6%97%B6%E9%97%B4%E9%97%AE%E9%A2%98/"/>
+    <id>http://retanoj.github.io/2014/08/14/Misc-2014-08-14-网站返回时间问题/</id>
+    <published>2014-08-13T16:00:00.000Z</published>
+    <updated>2016-10-31T07:02:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="GMT时间"><a href="#GMT时间" class="headerlink" title="GMT时间"></a>GMT时间</h2><pre><code>GMT(Greenwich Mean Time)是格林尼治平时
+在格林尼治子午线上的平太阳时称为世界时(UTC)，又叫格林尼治平时(GMT)。 
+</code></pre><h2 id="PHP时区设置"><a href="#PHP时区设置" class="headerlink" title="PHP时区设置"></a>PHP时区设置</h2><pre><code>在php.ini中，`date.timezone` 参数控制时区
+上海时间为GMT + 0800小时，即东八区
+
+一些常用的时区标识符说明： 
+
+    Asia/Shanghai – 上海
+    Asia/Macao – 澳门 
+    ...
+
+在程序PHP 5以上版本的程序代码中使用函数
+    ini_set(&apos;date.timezone&apos;,&apos;Asia/Shanghai&apos;); 或 
+    date_default_timezone_set(‘Asia/Shanghai&apos;); 
+来设置时区
+</code></pre><h2 id="PHP-时间戳与日期转换"><a href="#PHP-时间戳与日期转换" class="headerlink" title="PHP 时间戳与日期转换"></a>PHP 时间戳与日期转换</h2><pre><code>返回自从 Unix 纪元（格林威治时间 1970 年 1 月 1 日 00:00:00）到当前时间的秒数。
+    echo time();
+
+UNIX时间戳转换为日期函数: date()
+    echo date(&quot;Y-m-d H:i:s&quot;,time());
+
+日期转换为时间戳用函数: strtotime()
+    echo strtotime(&apos;2010-03-24 08:15:42&apos;);
+</code></pre><h2 id="Python-时间戳与日期转换"><a href="#Python-时间戳与日期转换" class="headerlink" title="Python 时间戳与日期转换"></a>Python 时间戳与日期转换</h2><pre><code>UNIX时间戳转换为日期函数: time.strftime()
+
+    import time
+    x = time.localtime(1317091800.0)
+    time.strftime(&apos;%Y-%m-%d %H:%M:%S&apos;, x)
+
+日期转换为时间戳用函数: datetime.datetime()
+
+    import time
+    import datetime
+    dc = datetime.datetime(2010, 6, 8, 19, 14, 59)
+    print time.mktime(dc.timetuple())
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;GMT时间&quot;&gt;&lt;a href=&quot;#GMT时间&quot; class=&quot;headerlink&quot; title=&quot;GMT时间&quot;&gt;&lt;/a&gt;GMT时间&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;GMT(Greenwich Mean Time)是格林尼治平时
+在格林尼治子午线上的平太阳时称为世界
+    
+    </summary>
+    
+      <category term="Misc" scheme="http://retanoj.github.io/categories/Misc/"/>
+    
+    
+      <category term="Misc" scheme="http://retanoj.github.io/tags/Misc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>保持SSH连接</title>
+    <link href="http://retanoj.github.io/2014/08/13/Misc-2014-08-13-%E4%BF%9D%E6%8C%81SSH%E8%BF%9E%E6%8E%A5/"/>
+    <id>http://retanoj.github.io/2014/08/13/Misc-2014-08-13-保持SSH连接/</id>
+    <published>2014-08-12T16:00:00.000Z</published>
+    <updated>2016-10-31T07:01:25.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h2><pre><code>修改/etc/ssh/sshd_config
+  TCPKeepAlive yes
+  ClientAliveInterval 60
+  ClientAliveCountMax 5
+</code></pre><h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><pre><code>ssh客户端全局修改/etc/ssh/ssh_config
+  TCPKeepAlive yes
+  ServerAliveInterval 60
+
+ssh客户端针对某次连接
+  ssh -o ServerAliveInterval=60 IP
+
+PuTTY客户端
+  在PuTTY Configuration中的Connection选项卡中
+  将Seconds between keepalives调成 10 （秒为单位）
+
+MyEnTunnel客户端
+  勾选Slow Poll（慢速轮询）选项
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;服务器端&quot;&gt;&lt;a href=&quot;#服务器端&quot; class=&quot;headerlink&quot; title=&quot;服务器端&quot;&gt;&lt;/a&gt;服务器端&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;修改/etc/ssh/sshd_config
+  TCPKeepAlive yes
+  ClientAliv
+    
+    </summary>
+    
+      <category term="Misc" scheme="http://retanoj.github.io/categories/Misc/"/>
+    
+    
+      <category term="Misc" scheme="http://retanoj.github.io/tags/Misc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>安装ambari(1.4.1.25)</title>
+    <link href="http://retanoj.github.io/2014/03/27/%E4%BA%91%E8%AE%A1%E7%AE%97-2014-03-27-%E5%AE%89%E8%A3%85ambari-1-4-1-25/"/>
+    <id>http://retanoj.github.io/2014/03/27/云计算-2014-03-27-安装ambari-1-4-1-25/</id>
+    <published>2014-03-26T16:00:00.000Z</published>
+    <updated>2016-10-31T07:03:07.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-前期准备"><a href="#1-前期准备" class="headerlink" title="1. 前期准备"></a>1. 前期准备</h3><p>1.1 永久关闭iptables、selinux，开启htpd服务（或者后期配置iptables）</p>
+<pre><code>iptables服务
+开机自启动： chkconfig iptables on
+开机不启动： chkconfig iptables off
+启动： service iptables start
+关闭： service iptables stop
+
+selinux永久关闭
+临时关闭： sudo setenforce 0
+修改 /etc/selinux/config 中 SELINUX=disabled
+
+ntpd服务
+安装： yum install -y ntp
+开机自启动： chkconfig ntpd on
+启动： /etc/init.d/ntpd start
+</code></pre><p>1.2 集群识别</p>
+<pre><code>方法一 —— 配置hosts文件
+xxx.xxx.xxx.xxx ambari
+xxx.xxx.xxx.xxx master.hadoop
+
+方法二 —— 配置DNS域名服务器 和 每台机器的FQDN
+</code></pre><p>1.3 集群免密登陆</p>
+<pre><code>配置 ambari-server 与各个 ambari-agent 之间免密码登陆，并保存好ambari-server的私钥备用
+
+参考 
+1.设置sudo免密码登陆
+http://www.cnblogs.com/maybob/p/3298846.html
+2.设置SSH无密码登陆远程主机
+http://www.cnblogs.com/maybob/p/3298903.html
+</code></pre><p>1.4 集群时间同步</p>
+<pre><code>参考 http://www.cnblogs.com/maybob/p/3332003.html
+</code></pre><h2 id="2-安装与配置ambari服务"><a href="#2-安装与配置ambari服务" class="headerlink" title="2. 安装与配置ambari服务"></a>2. 安装与配置ambari服务</h2><p>2.1 配置ambari本地源</p>
+<pre><code>vim /etc/yum.repos.d/ambari.repo
+添加以下内容
+&apos;&apos;&apos;
+[ambari-1.x]
+name=Ambari 1.x
+baseurl=http://源IP/ambari/
+gpgcheck=0
+enabled=1
+
+[HDP-UTILS-1.1.0.16]
+name=Hortonworks Data Platform Utils Version - HDP-UTILS-1.1.0.16
+baseurl=http://源IP/ambari/
+gpgcheck=0
+enabled=1
+
+[Updates-ambari-1.4.1.25]
+name=ambari-1.4.1.25 - Updates
+baseurl=http://源IP/ambari/
+gpgcheck=
+enabled=1
+&apos;&apos;&apos;
+
+vim /etc/yum.repos.d/centos.repo
+添加以下内容
+&apos;&apos;&apos;
+[centos]
+baseurl=http://源IP/centos/
+enabled=1
+gpgcheck=0
+&apos;&apos;&apos;
+</code></pre><p>2.2 开始安装</p>
+<pre><code>yum -y install ambari-server
+</code></pre><p>2.3 开始配置ambari服务</p>
+<pre><code>将之前准备的 jdk-6u31-linux-x64.bin 上传到 /var/lib/ambari-server/resources
+
+chmod +x jdk-6u31-linux-x64.bin
+
+ambari-server setup #安装过程中保持默认就好
+</code></pre><h2 id="3-为ambari配置hadoop本地源"><a href="#3-为ambari配置hadoop本地源" class="headerlink" title="3. 为ambari配置hadoop本地源"></a>3. 为ambari配置hadoop本地源</h2><pre><code>cd /var/lib/ambari-server/resources/stacks/HDPLocal/2.0.6/repos/
+
+vim repoinfo.xml 修改对应系统版本(centos 6)的 &lt;baseurl&gt;
+
+&lt;reposinfo&gt;
+  &lt;os type=&quot;centos6&quot;&gt;
+    &lt;repo&gt;
+      &lt;baseurl&gt;http://源IP/hdp/&lt;/baseurl&gt;
+      &lt;repoid&gt;HDP-2.0.6&lt;/repoid&gt;
+      &lt;reponame&gt;HDP&lt;/reponame&gt;
+    &lt;/repo&gt;
+  &lt;/os&gt;
+</code></pre><p>到此，ambari安装完成。在接下来的环境部署过程中，ambari为所有主机安装ambari-agent时，会将ambari server下的 /etc/yum.repo.d/ambari.repo 文件复制到所有主机。在安装hadoop环境时，会将3中设置的本地源配置到所有主机</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-前期准备&quot;&gt;&lt;a href=&quot;#1-前期准备&quot; class=&quot;headerlink&quot; title=&quot;1. 前期准备&quot;&gt;&lt;/a&gt;1. 前期准备&lt;/h3&gt;&lt;p&gt;1.1 永久关闭iptables、selinux，开启htpd服务（或者后期配置iptables）&lt;/p
+    
+    </summary>
+    
+      <category term="云计算" scheme="http://retanoj.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/"/>
+    
+    
+      <category term="云计算" scheme="http://retanoj.github.io/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/"/>
+    
+      <category term="ambari" scheme="http://retanoj.github.io/tags/ambari/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>搭建本地ambari yum源</title>
+    <link href="http://retanoj.github.io/2014/03/26/%E4%BA%91%E8%AE%A1%E7%AE%97-2014-03-26-%E6%90%AD%E5%BB%BA%E6%9C%AC%E5%9C%B0ambari-yum%E6%BA%90/"/>
+    <id>http://retanoj.github.io/2014/03/26/云计算-2014-03-26-搭建本地ambari-yum源/</id>
+    <published>2014-03-25T16:00:00.000Z</published>
+    <updated>2016-10-31T07:02:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-一台联网机器，下载所需文件"><a href="#1-一台联网机器，下载所需文件" class="headerlink" title="1. 一台联网机器，下载所需文件"></a>1. 一台联网机器，下载所需文件</h2><p>1.1 准备ambari.repo相关组件</p>
+<pre><code>wget http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.4.1.25/ambari.repo
+
+cp ambari.repo /etc/yum.repos.d/
+
+同步如下安装包 (ps,会直接同步到当前目录下)
+
+reposync -r HDP-UTILS-1.1.0.16
+
+reposync -r Updates-ambari-1.4.1.25
+
+reposync -r ambari-1.x
+</code></pre><p>1.2.1 准备hortonworks hadoop (HDP) 2.0.6本地源 ——方法一</p>
+<pre><code>vim /etc/yum.repos.d/HDP.repo
+
+添加如下内容
+&apos;&apos;&apos;
+[HDP-2.0.6]
+name=HDP
+baseurl=http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.0.6.0
+enabled=1
+gpgcheck=0
+&apos;&apos;&apos;
+
+同步HDP-2.0.6到本地（约3G大小）
+
+reposync -r HDP-2.0.6
+</code></pre><p>1.2.2 准备hortonworks hadoop (HDP) 2.0.6本地源 ——方法二</p>
+<pre><code>下载HDP-2.0.6即可
+
+http://s3.amazonaws.com/public-repo-1.hortonworks.com/HDP/centos6/HDP-2.0.6.0-centos6-rpm.tar.gz
+</code></pre><p>1.3 下载或准备Centos 6系统</p>
+<pre><code>如北理源    http://mirror.bit.edu.cn/centos/6/os/x86_64/
+</code></pre><p>1.4 下载好 <strong>jdk-6u31-linux-x64.bin</strong> 备用 </p>
+<h2 id="2-搭建本地yum源环境"><a href="#2-搭建本地yum源环境" class="headerlink" title="2. 搭建本地yum源环境"></a>2. 搭建本地yum源环境</h2><p>2.1 制作ambari源相关组件源</p>
+<pre><code>需要一台较大硬盘的web服务器，可被即将安装ambari的机器访问到
+
+将 HDP-UTILS-1.1.0.16 、 Updates-ambari-1.4.1.25 、 ambari-1.x 复制到 /var/www/html/ambari文件夹下
+
+执行如下命令
+
+cd /var/www/html/ambari
+
+createrepo ./ (ps, createrepo 可能需要安装)
+</code></pre><p>2.2 制作HDP-2.0.6软件源</p>
+<pre><code>将之前下载或同步的HDP-2.0.6 (如果是.tar.gz文件需要解压) 复制到 /var/www/html/hdp文件夹下
+
+执行如下命令
+
+cd /var/www/html/hdp
+
+createrepo ./
+</code></pre><p>2.3 制作Centos 6安装源</p>
+<pre><code>将之前准备的centos 6安装环境复制到 /var/www/html/centos/ 文件夹下 (ps, 如需解压请解压)
+</code></pre><h2 id="3-测试源是否成功"><a href="#3-测试源是否成功" class="headerlink" title="3. 测试源是否成功"></a>3. 测试源是否成功</h2><pre><code>访问 http://本机ip/ambari 、 http://本机ip/hdp 和 http://本机ip/centos 能够正常访问即可    
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-一台联网机器，下载所需文件&quot;&gt;&lt;a href=&quot;#1-一台联网机器，下载所需文件&quot; class=&quot;headerlink&quot; title=&quot;1. 一台联网机器，下载所需文件&quot;&gt;&lt;/a&gt;1. 一台联网机器，下载所需文件&lt;/h2&gt;&lt;p&gt;1.1 准备ambari.rep
+    
+    </summary>
+    
+      <category term="云计算" scheme="http://retanoj.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/"/>
+    
+    
+      <category term="云计算" scheme="http://retanoj.github.io/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/"/>
+    
+      <category term="ambari" scheme="http://retanoj.github.io/tags/ambari/"/>
+    
+  </entry>
+  
+</feed>
