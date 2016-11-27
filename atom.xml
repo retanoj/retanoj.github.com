@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://retanoj.github.io/"/>
-  <updated>2016-10-31T12:48:06.000Z</updated>
+  <updated>2016-11-26T12:08:01.000Z</updated>
   <id>http://retanoj.github.io/</id>
   
   <author>
@@ -14,6 +14,73 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java反序列化漏洞原理小记</title>
+    <link href="http://retanoj.github.io/2016/11/26/Java-2016-11-26-JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86%E5%B0%8F%E8%AE%B0/"/>
+    <id>http://retanoj.github.io/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/</id>
+    <published>2016-11-25T16:00:00.000Z</published>
+    <updated>2016-11-26T12:08:01.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>对于JAVA反序列化漏洞原理，<a href="http://www.angelwhu.com/blog/?p=394" title="java反序列化漏洞原理分析" target="_blank" rel="external">《java反序列化漏洞原理分析》</a>和<a href="https://blog.chaitin.com/2015-11-11_java_unserialize_rce/#h4.3_jenkins" title="Lib之过？Java反序列化漏洞通用利用分析" target="_blank" rel="external">《Lib之过？Java反序列化漏洞通用利用分析》</a>两篇文章已经分析的很是透彻了。<br>本篇小记是为了简要记录一下漏洞原理，以防忘记时可以快速查找。</p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ol>
+<li>待序列化类必须实现 Serializable 接口。 </li>
+<li>反序列化过程会自动调用类的readObject(java.io.ObjectInputStream in)方法。 </li>
+<li>反序列化命令执行的核心是ChainedTransformer，助手是被装饰的Map，自动触发是AnnotationInvocationHandler。</li>
+</ol>
+<h2 id="Payload外衣-—-TransformedMap"><a href="#Payload外衣-—-TransformedMap" class="headerlink" title="Payload外衣 — TransformedMap"></a>Payload外衣 — TransformedMap</h2><p>TransformedMap可被序列化，可以将任意Map对象生成相应的TransformedMap对象。<br>当一个TransformedMap对象的迭代对象被调用setValue()时，会触发</p>
+<pre><code>Map.Entry.setValue() ==&gt; 
+AbstractInputCheckedMapDecorator.MapEntry.setValue() ==&gt; 
+TransformedMap.checkSetValue() ==&gt; 
+valueTransformer.transform() 
+</code></pre><p>如果valueTransformer为一个构造好的ChainedTransformer，即可执行exec()。</p>
+<p>即：<em>一个 TransformedMap 在 setValue() 时可以 exec() 。</em></p>
+<h2 id="Payload外衣-—-LazyMap"><a href="#Payload外衣-—-LazyMap" class="headerlink" title="Payload外衣 — LazyMap"></a>Payload外衣 — LazyMap</h2><p>LazyMap可被序列化，也可以给Map对象添加Transformer生成相应的LazyMap。<br>当LazyMap对象成员被调用get()时，会触发 </p>
+<pre><code>this.factory.transform(key)
+</code></pre><p>如果factory为一个构造好的ChainedTransformer，即可执行exec()。</p>
+<p>即：<em>一个 LazyMap 在 get() 时可以 exec() 。</em></p>
+<h2 id="Payload核心-—-ChainedTransformer"><a href="#Payload核心-—-ChainedTransformer" class="headerlink" title="Payload核心 — ChainedTransformer"></a>Payload核心 — ChainedTransformer</h2><p>这里Payload以命令执行为目标。<br>ChainedTransformer可以将一系列Transformer串联组装起来，而在ConstantTransformer和InvokerTransformer的帮助下，恰好可以完成</p>
+<pre><code>Runtime.getRuntime().exec(&quot;id&quot;);
+</code></pre><p>但是Runtime类未实现Serializable接口，需要利用反射的方法来完成调用，即：</p>
+<pre><code>((Runtime)Runtime.class.getMethod(&quot;getRuntime&quot;).invoke(null, new Object[0])).exec(&quot;id&quot;)
+</code></pre><p>因此，ChainedTransformer构造如下：</p>
+<pre><code>Transformer[] transformers = new Transformer[] {
+   new ConstantTransformer(Runtime.class),
+   new InvokerTransformer(&quot;getMethod&quot;, new Class[] {
+       String.class, Class[].class }, new Object[] {
+           getRuntime&quot;, new Class[0] }),
+   new InvokerTransformer(&quot;invoke&quot;, new Class[] {
+       Object.class, Object[].class }, new Object[] {
+           null, new Object[0] }),
+    new InvokerTransformer(&quot;exec&quot;, new Class[] {
+       String[].class }, new Object[] { &quot;id&quot; }),
+    new ConstantTransformer(1) };
+Transformer transformerChain = new ChainedTransformer(transformers);
+</code></pre><h2 id="Payload触发器-—-AnnotationInvocationHandler"><a href="#Payload触发器-—-AnnotationInvocationHandler" class="headerlink" title="Payload触发器 — AnnotationInvocationHandler"></a>Payload触发器 — AnnotationInvocationHandler</h2><p>以上所述要达到命令执行，需要对Map进行setValue()或get()操作。而我们需要让一个对象在被反序列化时，自动触发对Map的操作，从而执行命令。<br>AnnotationInvocationHandler类可被序列化，且拥有Map成员。该类的对象在被反序列化时，可以满足条件。</p>
+<h3 id="装载TransformedMap"><a href="#装载TransformedMap" class="headerlink" title="装载TransformedMap"></a>装载TransformedMap</h3><p>在java 1.7中，AnnotationInvocationHandler类的readObject()方法存在对其Map成员的setValue()调用。当Map成员为一个构造好的TransformedMap，AnnotationInvocationHandler对象在被反序列化时，即可执行exec()。</p>
+<p>即：<em>一个被构造了 TransformedMap 成员的 AnnotationInvocationHandler 在反序列化时可以 exec() 。</em></p>
+<h3 id="装载LazyMap"><a href="#装载LazyMap" class="headerlink" title="装载LazyMap"></a>装载LazyMap</h3><p>AnnotationInvocationHandler类实现了InvocationHandler接口，可以代理其他对象。<br>被AnnotationInvocationHandler代理的对象进行方法调用时，会执行AnnotationInvocationHandler类的invoke()方法。<br>在AnnotationInvocationHandler类的invoke()方法中，存在对其Map成员的get()调用，因此在其代理的对象进行方法调用时，有可能执行exec()。<br>假设Map对象AAAMap被一个拥有LazyMap成员的AnnotationInvocationHandler类代理了，则AAAMap对象进行方法调用时（如AAAMap.get()）就会exec()。为了反序列化时就exec()，还需要将AAAMap装填在一个新的AnnotationInvocationHandler中，最终达到如下调用链： </p>
+<pre><code>AIHandler1.readObject() ==&gt;
+AIHandler1.memberValues.xxx() ==&gt; // memberValues为被代理的AAAMap
+AIHandler2.invoke() ==&gt;
+AIHandler2.memberValues.get() ==&gt; // memberValues为构造的LazyMap
+ChainedTransformer.transform() ==&gt;
+exec()
+</code></pre><p>即：<em>一个被构造了 LazyMap 成员的 AnnotationInvocationHandler 类代理的对象，在进行方法调用时可能执行 exec() 。</em></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;对于JAVA反序列化漏洞原理，&lt;a href=&quot;http://www.angelwhu.com/blog/?p=394&quot; title=&quot;ja
+    
+    </summary>
+    
+      <category term="Java" scheme="http://retanoj.github.io/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="http://retanoj.github.io/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>从Jekyll迁移到Hexo</title>
