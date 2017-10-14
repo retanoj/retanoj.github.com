@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://retanoj.github.io/"/>
-  <updated>2017-10-14T16:41:32.000Z</updated>
+  <updated>2017-10-14T17:13:59.000Z</updated>
   <id>http://retanoj.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>X41 D-Sec Shadowsocks REC分析</title>
-    <link href="http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-REC%E5%88%86%E6%9E%90/"/>
-    <id>http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-REC分析/</id>
+    <title>X41 D-Sec Shadowsocks RCE分析</title>
+    <link href="http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-RCE%E5%88%86%E6%9E%90/"/>
+    <id>http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-RCE分析/</id>
     <published>2017-11-13T16:00:00.000Z</published>
-    <updated>2017-10-14T16:41:32.000Z</updated>
+    <updated>2017-10-14T17:13:59.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，<a href="https://x41-dsec.de/lab/advisories/x41-2017-008-shadowsocks/" target="_blank" rel="external">文章在此</a>。以下对文中提及的日志文件写入和命令执行漏洞进行简要分析。</p>
 <p>漏洞细节还是很简单的，但其中涉及到了一些小技巧还是可以提一提的。</p>

