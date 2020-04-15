@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://retanoj.github.io/2020/04/15/XSS-2020-04-15-XSS-game-of-pwnfunction-Warmups/</loc>
+    
+    <lastmod>2020-04-15T14:15:10.838Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://retanoj.github.io/2017/11/14/Python-2017-10-14-X41-D-Sec-Shadowsocks-RCE%E5%88%86%E6%9E%90/</loc>
     
     <lastmod>2020-04-14T03:06:33.223Z</lastmod>
