@@ -28,12 +28,12 @@
 <meta property="og:site_name" content="retanoj&#39;s Blog">
 <meta property="og:description" content="题目甲乙两人按一定规则拿棋子，棋子有19颗，规则是每次每人只能拿1或3或6颗。问是否有先手必胜策略，策略是什么？ 题解首先说明一点，按个人理解题意，当剩下2颗棋子时，选手只能拿走1颗。 接下来说递推过程  棋子有1颗，按如上规则，那么先手必胜，必胜策略是拿1颗；  棋子有2颗，按如上规则，那么先手必败，因为先手只能拿1颗，后手（对方）在剩余棋子情况下拿1颗，对方赢；  棋子有3颗，按如上规则，那么">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://ww3.sinaimg.cn/large/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg">
-<meta property="og:updated_time" content="2018-12-12T02:20:05.732Z">
+<meta property="og:image" content="http://retanoj.github.io/images/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg">
+<meta property="og:updated_time" content="2020-04-17T13:05:31.116Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="腾讯2016在线笔试某题">
 <meta name="twitter:description" content="题目甲乙两人按一定规则拿棋子，棋子有19颗，规则是每次每人只能拿1或3或6颗。问是否有先手必胜策略，策略是什么？ 题解首先说明一点，按个人理解题意，当剩下2颗棋子时，选手只能拿走1颗。 接下来说递推过程  棋子有1颗，按如上规则，那么先手必胜，必胜策略是拿1颗；  棋子有2颗，按如上规则，那么先手必败，因为先手只能拿1颗，后手（对方）在剩余棋子情况下拿1颗，对方赢；  棋子有3颗，按如上规则，那么">
-<meta name="twitter:image" content="http://ww3.sinaimg.cn/large/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg">
+<meta name="twitter:image" content="http://retanoj.github.io/images/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg">
 
 <link rel="canonical" href="http://retanoj.github.io/2016/03/03/题目-2016-03-03-腾讯2016在线笔试某题/">
 
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2018-12-12 10:20:05" itemprop="dateModified" datetime="2018-12-12T10:20:05+08:00">2018-12-12</time>
+                <time title="Modified: 2020-04-17 21:05:31" itemprop="dateModified" datetime="2020-04-17T21:05:31+08:00">2020-04-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -238,7 +238,7 @@
 </ul>
 <p>可归纳出结论如下：在棋子有N颗的情况下，若先手通过拿1颗或3颗或6颗的规则能够将后手引入剩余棋子的“先拿”必败策略，则先手必胜；若先手在三种规则下都会将后手引入剩余棋子的“先拿”必胜策略，则先手必败。</p>
 <p>因此可以列出下表</p>
-<p><img src="http://ww3.sinaimg.cn/large/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg" alt></p>
+<p><img src="/images/3dc4ad00jw1f2qdp6zltzj20hs02paam.jpg" alt></p>
 <p>举例来看，当棋子有7颗时，先手拿1颗后手剩6颗，后手进入“先拿必胜棋子数6颗”的情况；先手拿3颗，后手进入“先拿必输棋子数4颗”的情况。因此在棋子数为7时，先手先拿3颗会必胜。</p>
 <p>因此，19颗时，19-1=18（可行），19-3=16（不行），19-6=13（可行）。先手有两种必胜策略，先拿1颗或先拿6颗。</p>
 <p>往后推也可以知道，这种算法的时间复杂度为O(n)</p>
@@ -341,7 +341,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
