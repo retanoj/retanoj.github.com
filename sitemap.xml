@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://retanoj.github.io/2020/04/18/%E9%A2%98%E7%9B%AE-XSS-2020-04-18-XSS-game-of-pwnfunction-Challenges-WW3/</loc>
+    
+    <lastmod>2020-04-18T10:02:15.784Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://retanoj.github.io/2020/04/17/%E9%A2%98%E7%9B%AE-XSS-2020-04-17-XSS-game-of-pwnfunction-Challenges-Keanu/</loc>
     
     <lastmod>2020-04-17T13:05:51.305Z</lastmod>
@@ -58,14 +65,14 @@
   </url>
   
   <url>
-    <loc>http://retanoj.github.io/2014/03/26/%E4%BA%91%E8%AE%A1%E7%AE%97-2014-03-26-%E6%90%AD%E5%BB%BA%E6%9C%AC%E5%9C%B0ambari-yum%E6%BA%90/</loc>
+    <loc>http://retanoj.github.io/2014/03/27/%E4%BA%91%E8%AE%A1%E7%AE%97-2014-03-27-%E5%AE%89%E8%A3%85ambari-1-4-1-25/</loc>
     
     <lastmod>2018-12-12T02:20:05.730Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://retanoj.github.io/2014/03/27/%E4%BA%91%E8%AE%A1%E7%AE%97-2014-03-27-%E5%AE%89%E8%A3%85ambari-1-4-1-25/</loc>
+    <loc>http://retanoj.github.io/2014/03/26/%E4%BA%91%E8%AE%A1%E7%AE%97-2014-03-26-%E6%90%AD%E5%BB%BA%E6%9C%AC%E5%9C%B0ambari-yum%E6%BA%90/</loc>
     
     <lastmod>2018-12-12T02:20:05.730Z</lastmod>
     
@@ -86,14 +93,14 @@
   </url>
   
   <url>
-    <loc>http://retanoj.github.io/2014/08/14/Misc-2014-08-14-%E7%BD%91%E7%AB%99%E8%BF%94%E5%9B%9E%E6%97%B6%E9%97%B4%E9%97%AE%E9%A2%98/</loc>
+    <loc>http://retanoj.github.io/2016/07/21/Misc-2016-07-21-%E5%AF%B9RESTful%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
     
     <lastmod>2018-12-12T02:20:05.725Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://retanoj.github.io/2016/07/21/Misc-2016-07-21-%E5%AF%B9RESTful%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
+    <loc>http://retanoj.github.io/2014/08/14/Misc-2014-08-14-%E7%BD%91%E7%AB%99%E8%BF%94%E5%9B%9E%E6%97%B6%E9%97%B4%E9%97%AE%E9%A2%98/</loc>
     
     <lastmod>2018-12-12T02:20:05.725Z</lastmod>
     
