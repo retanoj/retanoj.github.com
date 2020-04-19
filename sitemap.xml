@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://retanoj.github.io/2020/04/19/%E9%A2%98%E7%9B%AE-XSS-2020-04-19-XSS-game-of-pwnfunction-Challenges-Jason-Bourne/</loc>
+    
+    <lastmod>2020-04-19T09:41:43.859Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://retanoj.github.io/2020/04/18/%E9%A2%98%E7%9B%AE-XSS-2020-04-18-XSS-game-of-pwnfunction-Challenges-WW3/</loc>
     
     <lastmod>2020-04-18T10:02:15.784Z</lastmod>
